@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, minimum-scale=0.1, maximum-scale=1, user-scalable=0">
+    <title>rpg</title>
+
+    <!-- Load custom style sheet -->
+    <link rel="stylesheet" type="text/css" href="theme/reset.css">
+    <link rel="stylesheet" type="text/css" href="theme/love.css">
+  </head>
+  <body>
+    <div class="fill_screen" style="height: 100%; display: flex; flex-direction: column;">
+      <header  id = "header">
+        <h1 class="center">
+          rpg
+        </h1>
+      </header>
+  
+      <main id="main" style="background-color: rgb(69, 69, 97); color: white;">
+        <canvas class="center" id="loadingCanvas" oncontextmenu="event.preventDefault()"></canvas>
+        <div id="root_div" class="center" style="width: 100%; height: 100%; display:table;">
+          <div class="center" style="display:table-cell; vertical-align:middle;">
+            <canvas class="center" id="canvas" width="800" height="600" oncontextmenu="event.preventDefault()"></canvas>
+          </div>
+        </div>
+      </main>
+      
+      <footer id = "footer">
+        <div>
+          <p>Built with <a href="https://github.com/Davidobot/love.js">love.js</a> <button onclick="goFullScreen();">Go Fullscreen</button><br>Hint: Reload the page if screen is blank</p>
+        </div>
+        </footer>
+  
+    </div>
+    
+    <script type='text/javascript'>
+      function goFullScreen(){
+            var canvas = document.getElementById("canvas");
+            if(canvas.requestFullScreen)
+                canvas.requestFullScreen();
+            else if(canvas.webkitRequestFullScreen)
+                canvas.webkitRequestFullScreen();
+            else if(canvas.mozRequestFullScreen)
+                canvas.mozRequestFullScreen();
+            else{
+              fullScreenElement()
+              // alert("not supported full screen.")
+            }
+      }
+      function fullScreenElement(){
+        var footer = document.getElementById('footer');
+        var header = document.getElementById('header');
+        footer.style.display = 'none';
+        header.style.display = 'none';
+      }
+      function FullScreenHook(){
+        var canvas = document.getElementById("canvas");
+        canvas.width = screen.width || window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        canvas.height = screen.height || window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+      }
+      var loadingContext = document.getElementById('loadingCanvas').getContext('2d');
+      var canvasContext = document.getElementById('canvas').getContext('webgl');
+      function drawLoadingText(text) {
+        var canvas = loadingContext.canvas;
+        var root_div = document.getElementById("root_div");
+
+        var w = document.getElementById('main').clientWidth;
+        var h = document.getElementById('main').clientHeight;
+        canvas.width = w
+        canvas.height = h
+
+        loadingContext.fillStyle = "rgb(0, 0, 0)";
+        loadingContext.fillRect(0, 0, w, h); // 塗りつぶし
+
+        loadingContext.font = '2em arial';
+        loadingContext.textAlign = 'center'
+        loadingContext.fillStyle = "rgb( 255, 255, 255 )";
+        loadingContext.fillText(text, w / 2, h / 2, w);
+
+        loadingContext.fillText("Powered By Emscripten.", w / 2, h / 4, w);
+        loadingContext.fillText("Powered By LÖVE.", w / 2, h/ 4 * 3, w);
+      }
+      /**
+       * 端末の方向を返却する
+       *
+       * @return {object}
+       */
+      function getAngle(){
+        // 角度を取得
+        let angle = screen && screen.orientation && screen.orientation.angle;
+        if ( angle === undefined ) {
+          angle = window.orientation;    // iOS用
+        }
+
+        const isPortrait = (angle === 0);
+        return({
+                value: angle,           // 具体的な角度
+          isPortrait: isPortrait,      // 縦向き
+          isLandscape: ! isPortrait,    // 横向き
+        });
+      }
+      /**
+       * 縦向きか
+       */
+      function isPortrait(){
+        // 角度を取得
+        const angle = getAngle();
+        if( angle.value === undefined ){
+          result.innerHTML = "端末の向きを取得することが出来ませんでした";
+          return(false);
+        }
+
+        // 縦向き
+        if( angle.isPortrait ) {
+        }
+        // 横向き
+        else{
+        }
+      }
+      /*
+      画面更新
+      */
+      function updateCanvasSize(){
+        let w = screen.width || window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        let h = screen.height || window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+        console.log( "window size = (" + w + "," + h + ")")
+
+        // 縦向き
+        if(isPortrait()){
+
+        }
+        // 横向き
+        else{
+
+        }
+
+        var canvas = document.getElementById("canvas");
+        var main = document.getElementById("main");
+        let base_rate = 800.0 / 600.0;
+        let height = 0
+        let width = 0
+        if((main.clientWidth / main.clientHeight) < base_rate)
+        {
+          width = main.clientWidth
+          width = parseInt( parseInt(width) / 10 ) * 10
+          height = width / base_rate
+        }
+        else
+        {
+          height = main.clientHeight
+          height = parseInt( parseInt(height) / 10 ) * 10
+          width = height * base_rate
+        }
+        //width = 800 * 1.5
+        //height = 600 * 1.5
+        canvas.style.height = height + "px"
+        canvas.style.width = width  + "px"
+      }
+      /*
+      高さを保つ
+      */
+      const setFillHeight = () => {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
+      };
+
+      window.onload = function () { window.focus(); };
+      window.onclick = function () { window.focus(); };
+
+      window.addEventListener("keydown", function(e) {
+        // space and arrow keys
+        if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+          e.preventDefault();
+        }
+      }, false);
+
+      // 向きが変わる度に呼び出される
+      window.addEventListener("orientationchange", ()=>{
+        updateCanvasSize();
+        setFillHeight();
+      });
+
+      // ウィンドウサイズが変わったときに呼ばれる
+      window.addEventListener("resize", ()=>{
+        updateCanvasSize();
+        setFillHeight();
+      });
+      // 画面操作があったときに呼ばれる
+      document
+        .querySelector(".fill_screen")
+        .addEventListener("touchmove", setFillHeight);
+      setFillHeight();
+
+      var Module = {
+        arguments: ["./game.love"],
+        INITIAL_MEMORY: 1000000000,
+        printErr: console.error.bind(console),
+        canvas: (function() {
+          var canvas = document.getElementById('canvas');
+
+          // As a default initial behavior, pop up an alert when webgl context is lost. To make your
+          // application robust, you may want to override this behavior before shipping!
+          // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
+          canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
+
+          return canvas;
+        })(),
+        setStatus: function(text) {
+          if (text) {
+            drawLoadingText(text);
+          } else if (Module.remainingDependencies === 0) {
+            document.getElementById('loadingCanvas').style.display = 'none';
+            document.getElementById('canvas').style.visibility = 'visible';
+            updateCanvasSize();
+            setFillHeight();
+          }
+        },
+        totalDependencies: 0,
+        remainingDependencies: 0,
+        monitorRunDependencies: function(left) {
+          this.remainingDependencies = left;
+          this.totalDependencies = Math.max(this.totalDependencies, left);
+          Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+        }
+      };
+      Module.setStatus('Downloading...');
+      window.onerror = function(event) {
+        // TODO: do not warn on ok events like simulating an infinite loop or exitStatus
+        // TODO: 無限ループやexitStatusをシミュレートするようなokイベントで警告しない
+        Module.setStatus('Exception thrown, see JavaScript console');
+        Module.setStatus = function(text) {
+          if (text) Module.printErr('[post-exception status] ' + text);
+        };
+      };
+
+      var applicationLoad = function(e) {
+        Love(Module);
+      }
+    </script>
+    <script type="text/javascript" src="game.js"></script>
+    <script async type="text/javascript" src="love.js" onload="applicationLoad(this)"></script>
+  </body>
+</html>
